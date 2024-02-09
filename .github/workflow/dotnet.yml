@@ -20,10 +20,10 @@ jobs:
           dotnet-version: '4.7'
 
       - name: Restore NuGet packages
-        run: nuget restore YourSolution.sln
+        run: nuget restore Dummy.sln
 
       - name: Build project
-        run: msbuild YourSolution.sln /p:Configuration=Release
+        run: msbuild Dummy.sln /p:Configuration=Release
 
       - name: Publish artifacts
         uses: actions/upload-artifact@v2
@@ -42,10 +42,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: production-files
-          path: ./_build/
+          path: ./dist/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_build/
+          publish_dir: ./dist/
