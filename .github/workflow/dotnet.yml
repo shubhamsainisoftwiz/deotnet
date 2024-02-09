@@ -1,0 +1,51 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Framework
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '4.7'
+
+      - name: Restore NuGet packages
+        run: nuget restore YourSolution.sln
+
+      - name: Build project
+        run: msbuild YourSolution.sln /p:Configuration=Release
+
+      - name: Publish artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: production-files
+          path: ./path/to/your/published/files
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: windows-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: production-files
+          path: ./dist/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist/
