@@ -35,7 +35,7 @@ jobs:
     name: Deploy
     needs: build
     runs-on: windows-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Download artifact
